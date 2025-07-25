@@ -18,6 +18,12 @@ This software is provided under the MIT license (which you must read at [LICENSE
 
 Adult content may violate the terms of service of some services used in this template, such as Stripe and Resend. If you plan to sell adult content, please check the terms of service of each service you use to ensure compliance. This template does not include any specific features for handling adult content, and you are responsible for ensuring that your store complies with all applicable laws and regulations regarding adult content.
 
+## Quick Start
+
+If you want to deploy this straight to Vercel, use this button. You will need to create accounts with the other cloud services listed below and enter the relevant API key environment variables (also explained below)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fliana-p%2Findie-game-store&env=STRIPE_PUBLISHABLE_KEY,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,RESEND_API_KEY,R2_ACCESS_KEY_ID,R2_SECRET_ACCESS_KEY,R2_BUCKET_NAME,R2_ACCOUNT_ID,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN&envDescription=API%20keys%20needed%20to%20use%20the%20various%20services%20this%20template%20requires&envLink=https%3A%2F%2Fgithub.com%2Fliana-p%2Findie-game-store%3Ftab%3Dreadme-ov-file%23configure-environment-variables&project-name=my-game-store&repository-name=my-game-store&demo-title=Liana's%20Store&demo-description=My%20store%20using%20this%20template&demo-url=https%3A%2F%2Fwalk-through-the-forest.ovh%2F)
+
 ## 🌩️ Services Used
 
 This template uses **free/cheap cloud services** to perform the following tasks:
