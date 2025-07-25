@@ -1,0 +1,44 @@
+---
+// Email Collection Modal Component
+---
+
+<div id="emailModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Enter Your Email</h3>
+      <button id="closeModal" class="close-button" type="button">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>We'll send your download links to this email address.</p>
+      <form id="emailForm">
+        <div class="form-group">
+          <label for="termsCheckbox">
+            <input type="checkbox" id="termsCheckbox" required />
+            I agree to the <a href="/terms" target="_blank">Terms of Service</a>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="privacyCheckbox">
+            <input type="checkbox" id="privacyCheckbox" required />
+            I agree to the <a href="/privacy" target="_blank">Privacy Policy</a>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="customerEmail">Email Address:</label>
+          <input 
+            type="email" 
+            id="customerEmail" 
+            placeholder="your@email.com"
+            required
+            autocomplete="email"
+          />
+        </div>
+        <div id="emailError" class="error-message" style="display: none;"></div>
+        <div class="modal-actions">
+          <button type="button" id="cancelBtn" class="secondary-button">Cancel</button>
+          <button type="submit" id="continueBtn" class="primary-button">Continue to Payment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

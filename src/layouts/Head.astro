@@ -1,0 +1,28 @@
+---
+import { siteConfig } from '../config/site';
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = siteConfig.site.title, description = siteConfig.site.description } = Astro.props;
+---
+<!doctype html>
+<html lang={siteConfig.site.locale} data-stripe-key={import.meta.env.STRIPE_PUBLISHABLE_KEY}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteConfig.site.title} />
+    <meta property="og:locale" content={siteConfig.site.locale} />
+    <meta property="og:image" content={siteConfig.site.ogImage} />
+    <title>{title}</title>
+  </head>
+  <slot />
+</html>

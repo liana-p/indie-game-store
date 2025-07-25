@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../config/site';
+import { Content as SupportContent } from '../../content/pages/support.md';
+
+---
+
+<Layout title="Support">
+  <div class="support-page">
+    {SupportContent ? (
+      <div class="markdown-content support-content">
+        <SupportContent />
+      </div>
+    ) : (
+      <!-- Fallback content if markdown fails to load -->
+      <div class="support-content">
+        <h1>Support</h1>
+        <p>For support, please contact us at <a href={`mailto:${siteConfig.developer.support_email}`}>{siteConfig.developer.support_email}</a></p>
+      </div>
+    )}
+  </div>
+
+  <style>
+    .support-page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--space-lg);
+    }
+
+    @media (max-width: 768px) {
+      .support-page {
+        padding: var(--space-md);
+      }
+    }
+  </style>
+</Layout>

@@ -1,0 +1,123 @@
+---
+// Screenshot Lightbox Modal Component
+---
+
+<div id="screenshotLightbox" class="lightbox-overlay" style="display: none;">
+  <div class="lightbox-content">
+    <button id="closeLightbox" class="lightbox-close" type="button">&times;</button>
+    <div class="lightbox-image-container">
+      <img id="lightboxImage" src="" alt="">
+    </div>
+    <div class="lightbox-info">
+      <h3 id="lightboxTitle"></h3>
+      <div class="lightbox-navigation">
+        <button id="prevScreenshot" class="nav-button">‹ Previous</button>
+        <span id="screenshotCounter"></span>
+        <button id="nextScreenshot" class="nav-button">Next ›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Screenshot Lightbox Functionality
+  let currentGameScreenshots = [];
+  let currentScreenshotIndex = 0;
+  let currentGameTitle = '';
+
+  function openScreenshot(element) {
+    const fullScreenshot = element.dataset.fullScreenshot;
+    const gameTitle = element.dataset.gameTitle;
+    const screenshotIndex = parseInt(element.dataset.screenshotIndex);
+
+    // Find all screenshots for this game
+    const gameCard = element.closest('.game-card');
+    const allThumbs = gameCard.querySelectorAll('.screenshot-thumb[data-full-screenshot]');
+    
+    currentGameScreenshots = Array.from(allThumbs).map(thumb => ({
+      full: thumb.dataset.fullScreenshot,
+      small: thumb.dataset.fullScreenshot
+    }));
+    
+    currentScreenshotIndex = screenshotIndex;
+    currentGameTitle = gameTitle;
+
+    showLightbox();
+  }
+
+  function showLightbox() {
+    const lightbox = document.getElementById('screenshotLightbox');
+    const image = document.getElementById('lightboxImage');
+    const title = document.getElementById('lightboxTitle');
+    const counter = document.getElementById('screenshotCounter');
+
+    // Set image and info
+    image.src = currentGameScreenshots[currentScreenshotIndex].full;
+    image.alt = `${currentGameTitle} screenshot ${currentScreenshotIndex + 1}`;
+    title.textContent = currentGameTitle;
+    counter.textContent = `${currentScreenshotIndex + 1} of ${currentGameScreenshots.length}`;
+
+    // Show/hide navigation buttons
+    const prevBtn = document.getElementById('prevScreenshot');
+    const nextBtn = document.getElementById('nextScreenshot');
+    
+    prevBtn.style.visibility = currentScreenshotIndex > 0 ? 'visible' : 'hidden';
+    nextBtn.style.visibility = currentScreenshotIndex < currentGameScreenshots.length - 1 ? 'visible' : 'hidden';
+
+    // Show lightbox
+    lightbox.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    const lightbox = document.getElementById('screenshotLightbox');
+    lightbox.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+
+  function navigateScreenshot(direction) {
+    const newIndex = currentScreenshotIndex + direction;
+    if (newIndex >= 0 && newIndex < currentGameScreenshots.length) {
+      currentScreenshotIndex = newIndex;
+      showLightbox();
+    }
+  }
+
+  // Event listeners
+  document.addEventListener('DOMContentLoaded', function() {
+    // Close lightbox
+    document.getElementById('closeLightbox').addEventListener('click', closeLightbox);
+    
+    // Navigation
+    document.getElementById('prevScreenshot').addEventListener('click', () => navigateScreenshot(-1));
+    document.getElementById('nextScreenshot').addEventListener('click', () => navigateScreenshot(1));
+    
+    // Click outside to close
+    document.getElementById('screenshotLightbox').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeLightbox();
+      }
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      const lightbox = document.getElementById('screenshotLightbox');
+      if (lightbox.style.display === 'flex') {
+        switch(e.key) {
+          case 'Escape':
+            closeLightbox();
+            break;
+          case 'ArrowLeft':
+            navigateScreenshot(-1);
+            break;
+          case 'ArrowRight':
+            navigateScreenshot(1);
+            break;
+        }
+      }
+    });
+  });
+
+  // Make functions globally available
+  window.openScreenshot = openScreenshot;
+</script>

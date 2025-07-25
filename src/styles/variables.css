@@ -1,0 +1,88 @@
+/* ==========================================================================
+   CSS Variables for Easy Theme Customization
+   ========================================================================== */
+
+:root {
+  /* === MAIN THEME COLORS (customize these for your brand) === */
+  --color-primary: #3b82f6; /* Main brand color (buttons, links, accents) */
+  --color-accent: #059669; /* Price color and success states */
+  --color-link: #ec4848; /* Link color and button backgrounds */
+  --color-background: linear-gradient(
+    180deg,
+    rgba(10, 1, 18, 1) 0%,
+    rgba(29, 13, 38, 1) 50%,
+    rgba(49, 3, 56, 1) 100%
+  ); /* Page background color */
+  --color-background-inverted: #ffffff; /* Inverted background color for contrast */
+  --color-text: #ffffff; /* Main text color */
+  --color-text-inverted: #0c1410; /* Inverted text color for contrast */
+  --color-topbar-bg: linear-gradient(
+    91deg,
+    rgba(56, 19, 84, 1) 0%,
+    rgba(62, 24, 84, 1) 50%,
+    rgba(114, 7, 133, 1) 100%
+  ); /* Top bar background color */
+  --color-topbar-text: #ffffff; /* Top bar text color */
+
+  /* === PAGE BACKGROUND IMAGE === */
+  --background-image: none; /* Background image URL - use url('path/to/image.jpg') */
+  --background-size: cover; /* Background size - cover, contain, auto, etc. */
+  --background-position: center center; /* Background position */
+  --background-repeat: no-repeat; /* Background repeat - no-repeat, repeat, repeat-x, repeat-y */
+  --background-attachment: fixed; /* Background attachment - fixed, scroll, local */
+
+  /* === ADDITIONAL COLORS (used throughout the site) === */
+  --color-white: #ffffff;
+  --color-card-bg: transparent;
+  --color-border: #e2e8f0;
+  --color-text-secondary: #dadada;
+  --color-text-muted: #94a3b8;
+  --color-featured-badge: #fbbf24;
+  --color-featured-text: #92400e;
+  --color-error: #dc2626;
+  --color-input-bg: #ffffff;
+  --color-buy-now-bg: var(--color-link);
+  --color-buy-now-text: var(--color-text);
+  --color-buy-now-price-bg: var(--color-background);
+  --color-buy-now-price-text: var(--color-link);
+  --color-buy-now-border: var(--color-link);
+
+  /* === MODALS === */
+  --modal-bg: rgba(0, 0, 0, 0.8);
+  --modal-content-bg: var(--color-background);
+  --modal-text: var(--color-text);
+  --modal-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --modal-border-radius: 8px;
+  --modal-border: 1px solid #e2e8f0;
+
+  /* === SHADOWS === */
+  --shadow-card:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-button: 0 2px 4px rgba(59, 130, 246, 0.2);
+
+  /* === SPACING === */
+  --space-sm: 0.5rem;
+  --space-md: 0.75rem;
+  --space-lg: 1rem;
+  --space-xl: 1.5rem;
+  --space-2xl: 2rem;
+  --space-3xl: 3rem;
+  --space-4xl: 4rem;
+
+  /* === BORDER RADIUS === */
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* === LAYOUT === */
+  --container-width: 1200px;
+  --card-padding: 1.5rem;
+  --games-grid-gap: 2rem;
+
+  /* === TRANSITIONS === */
+  --transition: 0.3s ease;
+  --transition-fast: 0.2s ease;
+}

@@ -1,0 +1,180 @@
+---
+import { siteConfig } from '../config/site';
+
+interface Props {
+  gameId: string;
+  gameTitle: string;
+  gamePrice: number;
+  gameThumbnail?: string;
+  gameImage?: string;
+  variant?: 'primary' | 'secondary';
+  size?: 'small' | 'normal';
+  showPrice?: boolean;
+}
+
+const { 
+  gameId, 
+  gameTitle, 
+  gamePrice, 
+  gameThumbnail, 
+  gameImage, 
+  variant = 'primary',
+  size = 'normal',
+  showPrice = false
+} = Astro.props;
+
+const buttonClass = `buy-button ${variant} ${size}`;
+---
+
+{showPrice ? (
+  <div class="price-button-box">
+    <div class="price-section">
+      ${gamePrice.toFixed(2)}&nbsp;{siteConfig.site.currency}
+    </div>
+    <button 
+      class="button-section"
+      onclick={`buyGame('${gameId}')`}
+      data-game-id={gameId}
+      data-game-title={gameTitle}
+      data-game-price={gamePrice}
+      data-game-thumbnail={gameThumbnail}
+      data-game-image={gameImage}
+    >
+      Buy Now
+    </button>
+  </div>
+) : (
+  <button 
+    class={buttonClass}
+    onclick={`buyGame('${gameId}')`}
+    data-game-id={gameId}
+    data-game-title={gameTitle}
+    data-game-price={gamePrice}
+    data-game-thumbnail={gameThumbnail}
+    data-game-image={gameImage}
+  >
+    Buy Now
+  </button>
+)}
+
+<style>
+.buy-button {
+  background: var(--color-link);
+  color: white;
+  border: 1px solid var(--color-link);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  cursor: pointer;
+  width: auto;
+  display: inline-block;
+  margin: 0 auto;
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.buy-button:hover {
+  background: color-mix(in srgb, var(--color-link) 80%, black 20%);
+  border-color: color-mix(in srgb, var(--color-link) 80%, black 20%);
+}
+
+.buy-button:disabled {
+  background: var(--color-text-muted);
+  border-color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* Button variants */
+.buy-button.secondary {
+  background: transparent;
+  color: var(--color-link);
+  border: 2px solid var(--color-link);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.buy-button.secondary:hover {
+  background: var(--color-link);
+  color: white;
+}
+
+.buy-button.small {
+  font-size: 0.8rem;
+  padding: var(--space-sm) var(--space-md);
+  letter-spacing: 0.3px;
+  border-radius: var(--radius-md);
+}
+
+/* Title-price row layout */
+.title-price-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.title-price-row .game-title {
+  margin: 0;
+  flex: 1;
+  min-width: 200px;
+}
+
+.title-price-row .game-price {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.title-price-row .buy-button {
+  white-space: nowrap;
+}
+
+/* Buy button container for centering */
+.buy-button-container {
+  display: flex;
+  justify-content: center;
+  margin: var(--space-lg) 0;
+}
+
+/* Steam-style price-button box */
+.price-button-box {
+  display: flex;
+  border: 2px solid var(--color-buy-now-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.price-section {
+  background: var(--color-buy-now-price-bg);
+  color: var(--color-buy-now-price-text);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.button-section {
+  background: var(--color-buy-now-bg);
+  color: var(--buy-now-text);
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-size: 0.8rem;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.button-section:hover {
+  filter: brightness(1.5);
+  color: white;
+}
+
+</style>

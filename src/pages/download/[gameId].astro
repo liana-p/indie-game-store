@@ -1,0 +1,194 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { siteConfig } from '@config/site';
+
+export const prerender = false;
+
+const { gameId } = Astro.params;
+
+if (!gameId) {
+  return Astro.redirect('/404');
+}
+
+// Load games and find the requested one
+const games = await getCollection('games');
+const game = games.find(g => g.id === gameId);
+
+if (!game) {
+  return Astro.redirect('/404');
+}
+
+// Get and validate download token from URL
+const token = Astro.url.searchParams.get('token');
+if (!token) {
+  return Astro.redirect('/recover-download');
+}
+
+// TODO: In production, verify the token corresponds to a valid purchase
+// For now, we'll allow all downloads with any token for testing
+console.log('📥 Download page accessed with token:', token ? `${token.substring(0, 10)}...` : 'NONE');
+---
+
+<Layout title={`Download ${game.data.title}`}>
+  <main class="container">
+    <div class="download-page">
+      <div class="game-header">
+        <img src={game.data.thumbnail} alt={game.data.title} class="game-cover" />
+        <div class="game-info">
+          <h1>{game.data.title}</h1>
+          <p>Choose your download:</p>
+        </div>
+      </div>
+
+      <div class="download-options">
+        {game.data.files.map((file) => (
+          <div class="download-option">
+            <div class="file-info">
+              <h3>{file.name}</h3>
+              {file.description && <p class="file-description">{file.description}</p>}
+              <p class="file-size">{file.size_gb} GB</p>
+            </div>
+            <a 
+              href={`/api/download?gameId=${gameId}&filename=${file.filename}&token=${token}`}
+              class="download-btn"
+              download
+            >
+              Download {file.name}
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <div class="download-info">
+        <h3>Download Information</h3>
+        <ul>
+          <li>Download links expire in 48 hours</li>
+          <li>You can re-download up to 5 times per purchase</li>
+          <li>Need help? Contact support at {siteConfig.developer.support_email}</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .download-page {
+    text-align: center;
+  }
+
+  .game-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    text-align: left;
+  }
+
+  .game-cover {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .game-info h1 {
+    margin: 0 0 1rem 0;
+  }
+
+  .game-info p {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .download-options {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .download-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .file-info {
+    text-align: left;
+    flex: 1;
+  }
+
+  .file-info h3 {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .file-description {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .file-size {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .download-btn {
+    background: linear-gradient(135deg, #0066cc, #0052a3);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+  }
+
+  .download-info {
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: left;
+  }
+
+  .download-info h3 {
+    margin: 0 0 1rem 0;
+  }
+
+  .download-info ul {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  .download-info li {
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .game-header {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .download-option {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .file-info {
+      text-align: center;
+    }
+  }
+</style>

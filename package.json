@@ -1,0 +1,26 @@
+{
+  "name": "indie-game-store",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.850.0",
+    "@aws-sdk/s3-request-presigner": "^3.850.0",
+    "@stripe/stripe-js": "^7.6.1",
+    "@types/js-yaml": "^4.0.9",
+    "@upstash/redis": "^1.35.1",
+    "astro": "^5.12.3",
+    "js-yaml": "^4.1.0",
+    "resend": "^4.7.0",
+    "sharp": "^0.34.3",
+    "stripe": "^18.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/vercel": "^8.2.3"
+  }
+}

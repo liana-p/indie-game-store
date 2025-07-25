@@ -1,0 +1,399 @@
+/* Games Section */
+.games-section {
+  margin-top: var(--space-2xl);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+  text-align: left;
+  border-bottom: 2px solid var(--color-link);
+  padding-bottom: var(--space-sm);
+}
+
+/* Grid layout for multiple games */
+.games-grid.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+/* Full-width layout for single game or fewer games */
+.games-grid.layout-full-width {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  margin-top: var(--space-lg);
+}
+
+/* Game Card Styles - Integrated into page, less boxy */
+.game-card {
+  background: transparent;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Full-width game cards have more horizontal layout */
+.games-grid.layout-full-width .game-card {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+  padding: var(--space-lg);
+  border-radius: var(--radius-sm);
+}
+
+.games-grid.layout-full-width .game-cover {
+  flex-shrink: 0;
+}
+
+.games-grid.layout-full-width .game-info {
+  flex: 1;
+  padding: 0;
+}
+
+.game-cover {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  min-height: 160px;
+  max-height: 300px;
+}
+
+.game-cover img {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+}
+
+.game-info {
+  padding: var(--space-lg);
+}
+
+/* Game Header with Thumbnail */
+.game-header {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.game-thumbnail {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.game-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.game-header-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.game-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 2px;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.game-price {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--color-accent);
+  margin: 0;
+}
+
+.game-description {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-md);
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+/* Markdown content styling within game cards - more compact */
+.game-description.markdown-content h1,
+.game-description.markdown-content h2,
+.game-description.markdown-content h3,
+.game-description.markdown-content h4 {
+  color: var(--color-text);
+  margin: var(--space-md) 0 var(--space-xs) 0;
+  line-height: 1.3;
+}
+
+.game-description.markdown-content h1 {
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-xs);
+}
+
+.game-description.markdown-content h2 {
+  font-size: 1rem;
+}
+
+.game-description.markdown-content h3 {
+  font-size: 0.95rem;
+}
+
+.game-description.markdown-content p {
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.game-description.markdown-content ul,
+.game-description.markdown-content ol {
+  margin: var(--space-sm) 0;
+  padding-left: var(--space-lg);
+}
+
+.game-description.markdown-content li {
+  margin-bottom: 2px;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.game-description.markdown-content blockquote {
+  border-left: 3px solid var(--color-primary);
+  padding-left: var(--space-md);
+  margin: var(--space-sm) 0;
+  font-style: italic;
+  background: var(--color-background);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+.game-description.markdown-content strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.game-description.markdown-content code {
+  background: var(--color-background);
+  padding: 0.125rem 0.25rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8em;
+  color: var(--color-text);
+}
+
+.game-description.markdown-content hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-md) 0;
+}
+
+.featured-badge {
+  background: var(--color-featured-badge);
+  color: var(--color-featured-text);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+  margin-bottom: var(--space-sm);
+}
+
+/* Game Content Layout - description on left, screenshots on right */
+.game-content-layout {
+  display: flex;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-md);
+  padding: 0 var(--space-lg);
+}
+
+/* Add padding to other sections outside game-info */
+.game-card .system-requirements,
+.game-card .file-info,
+.game-card .buy-button {
+  margin-left: var(--space-lg);
+  margin-right: var(--space-lg);
+}
+
+.game-description-area {
+  flex: 1;
+  min-width: 0; /* Allows flex item to shrink below content size */
+}
+
+.screenshots-sidebar {
+  flex-shrink: 0;
+  width: 200px; /* Fixed width for screenshots sidebar */
+}
+
+/* Screenshots Grid - vertical layout for sidebar */
+.screenshots-sidebar .screenshots-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* Screenshots Grid - horizontal layout when no sidebar */
+.screenshots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  max-width: 100%;
+}
+
+/* Override grid layout for sidebar screenshots */
+.screenshots-sidebar .screenshots-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: 0;
+}
+
+/* Responsive: Stack vertically on smaller screens */
+@media (max-width: 768px) {
+  .game-content-layout {
+    flex-direction: column;
+  }
+
+  .screenshots-sidebar {
+    width: 100%;
+  }
+
+  .screenshots-sidebar .screenshots-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .screenshots-sidebar .screenshot-thumb {
+    flex: 0 0 calc(25% - var(--space-sm));
+    min-width: 80px;
+  }
+}
+
+.screenshot-thumb {
+  aspect-ratio: 16/9;
+  min-height: 60px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f1f5f9;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.screenshot-thumb:hover {
+  border-color: var(--color-link);
+}
+
+.screenshot-thumb::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.screenshot-thumb:hover::after {
+  opacity: 1;
+}
+
+.more-screenshots {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  grid-column: 4;
+  font-size: 1.1rem;
+}
+
+/* System Requirements - more compact */
+.system-requirements {
+  padding: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.system-requirements strong {
+  color: var(--color-text);
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-size: 0.9rem;
+}
+
+.system-requirements ul {
+  margin: 0;
+  padding-left: var(--space-md);
+  list-style: none;
+}
+
+.system-requirements li {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.system-requirements li::before {
+  content: "•";
+  color: var(--color-link);
+  margin-right: var(--space-sm);
+}
+
+.system-requirements li strong {
+  margin-right: var(--space-sm);
+}
+/* File Info - more compact */
+.file-info {
+  padding: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.file-count,
+.total-size {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.file-count {
+  font-weight: 600;
+  margin-bottom: 2px;
+}

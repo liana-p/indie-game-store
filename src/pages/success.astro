@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../config/site';
+import Stripe from 'stripe';
+
+const sessionId = Astro.url.searchParams.get('session_id');
+
+// Debug: Check if the session actually completed
+let sessionStatus = 'unknown';
+if (sessionId) {
+  try {
+    const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY!);
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    sessionStatus = session.payment_status;
+    console.log('💳 Session status:', sessionStatus);
+    console.log('🔍 Full session:', JSON.stringify(session, null, 2));
+  } catch (error) {
+    console.error('❌ Failed to retrieve session:', error);
+    sessionStatus = 'error';
+  }
+}
+---
+
+<Layout title="Purchase Successful!">
+  <div class="content-section">
+    <h1>🎉 Purchase Successful!</h1>
+    <p>Thank you for your purchase! You should receive an email with your download link shortly.</p>
+    
+    {sessionId && (
+      <div style="background: #f0f9ff; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+        <p><strong>Session ID:</strong> {sessionId}</p>
+        <p><strong>Payment Status:</strong> {sessionStatus}</p>
+        <p><small>Keep this for your records</small></p>
+        {sessionStatus !== 'paid' && (
+          <p style="color: red; font-weight: bold;">
+            ⚠️ Payment not completed - this is why no webhook was sent!
+          </p>
+        )}
+      </div>
+    )}
+    
+    <div style="margin-top: 2rem;">
+      <h2>What's Next?</h2>
+      <ul>
+        <li>Check your email for the download link</li>
+        <li>Download link expires in 48 hours</li>
+        <li>You have 5 download attempts</li>
+        <li>Need help? Contact {siteConfig.developer.support_email}</li>
+      </ul>
+    </div>
+    
+    <div style="margin-top: 2rem; display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+      <a href="/" style="color: #3b82f6; text-decoration: none;">← Back to Store</a>
+      <a href="/recover-download" style="color: #3b82f6; text-decoration: none;">📧 Recover Downloads</a>
+    </div>
+  </div>
+</Layout>

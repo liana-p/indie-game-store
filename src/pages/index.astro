@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import GameCard from '../components/GameCard.astro';
+import EmailModal from '../components/EmailModal.astro';
+import ScreenshotLightbox from '../components/ScreenshotLightbox.astro';
+import { siteConfig } from '../config/site';
+import { Content as LandingContent } from '../../content/landing.md';
+
+// Load games from content collection
+const games = await getCollection('games');
+
+// Debug: Check what game descriptions are available
+try {
+  const gameDescriptions = await getCollection('game-descriptions');
+  console.log('Available game descriptions:', gameDescriptions.map(d => d.id));
+} catch (e) {
+  console.log('Error loading game descriptions collection:', e);
+}
+
+// Sort games - featured first if enabled and there are multiple games
+const sortedGames = games.length > 1 && siteConfig.layout.show_featured_first 
+  ? games.sort((a, b) => (b.data.featured ? 1 : 0) - (a.data.featured ? 1 : 0))
+  : games;
+
+// Conditionally load landing page content if enabled and there are multiple games or content exists
+let LandingContent = null;
+let hasLandingContent = false;
+if (siteConfig.layout.show_landing_content) {
+  hasLandingContent = true;
+}
+---
+
+<Layout>
+  <!-- Landing Content (conditional - only if content exists and not empty) -->
+  {hasLandingContent && LandingContent && (
+    <div class="content-section">
+      <LandingContent />
+    </div>
+  )}
+
+  <!-- Games Section -->
+  <div class="games-section">
+    {/* Only show section title if there are multiple games */}
+    {games.length > 1 && (
+      <h2 class="section-title">
+        {siteConfig.layout.show_featured_first ? 'Featured Games' : 'Games'}
+      </h2>
+    )}
+    <div class={`games-grid layout-${siteConfig.layout.game_layout}`}>
+      {sortedGames.map((game) => (
+        <GameCard game={game} />
+      ))}
+    </div>
+  </div>
+
+  <!-- Email Collection Modal -->
+  <EmailModal />
+
+  <!-- Screenshot Lightbox Modal -->
+  <ScreenshotLightbox />
+
+  <script>
+    import '../scripts/checkout.ts';
+  </script>
+
+</Layout>

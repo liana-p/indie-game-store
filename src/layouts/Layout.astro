@@ -1,0 +1,33 @@
+---
+import { siteConfig } from '../config/site';
+import '../styles/variables.css';
+import '../styles/layout.css';
+import '../styles/games.css';
+import '../styles/modals.css';
+import '../styles/components.css';
+import '../styles/markdown.css';
+import '../styles/responsive.css';
+import Header from './Header.astro';
+import Head from './Head.astro';
+import Footer from './Footer.astro';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = siteConfig.site.title, description = siteConfig.site.description } = Astro.props;
+---
+
+<Head title={title} description={description}>
+  <body>
+    <Header />
+    
+    <main>
+      <div class="site-container">
+        <slot />
+        <Footer />
+      </div>
+    </main>
+  </body>
+</Head>

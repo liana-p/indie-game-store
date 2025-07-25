@@ -1,0 +1,161 @@
+---
+import { siteConfig } from '../config/site';
+import { getEntry, render } from 'astro:content';
+import BuyNowButton from './BuyNowButton.astro';
+
+interface Props {
+  game: {
+    id: string;
+    data: {
+      title: string;
+      price: number;
+      description: string;
+      image?: string;
+      thumbnail?: string;
+      featured: boolean;
+      screenshots?: string[];
+      small_screenshots?: string[];
+      system_requirements?: Array<{
+        platform: string;
+        requirements: string;
+      }>;
+      files: Array<{
+        name: string;
+        filename: string;
+        size_gb: number;
+        description?: string;
+      }>;
+    };
+  };
+}
+
+const { game } = Astro.props;
+
+// Try to load optional markdown description for this game
+let gameDescription = null;
+let MarkdownContent = null;
+try {
+  gameDescription = await getEntry('game-descriptions', game.id);
+  if (gameDescription) {
+    const { Content } = await render(gameDescription);
+    MarkdownContent = Content;
+  }
+} catch (e) {
+  console.log('Error loading markdown description:', e);
+}
+---
+
+<div class="game-card">
+  {game.data.featured && <span class="featured-badge">Featured</span>}
+  
+  {/* Game Cover Image - spans full width */}
+  {game.data.image && (
+    <div class="game-cover">
+      <img src={game.data.image} alt={`${game.data.title} cover`} />
+    </div>
+  )}
+  
+  {/* Main content area with title/description on left, screenshots on right */}
+  <div class="game-content-layout">
+      {/* Game Description on the left */}
+      <div class="game-description-area">
+        <div class="game-header">
+          {game.data.thumbnail && (
+            <div class="game-thumbnail">
+              <img src={game.data.thumbnail} alt={`${game.data.title} thumbnail`} />
+            </div>
+          )}
+          <div class="game-header-content">
+            <div class="title-price-row">
+              <h3 class="game-title">{game.data.title}</h3>
+            </div>
+          </div>
+          <BuyNowButton 
+            gameId={game.id}
+            gameTitle={game.data.title}
+            gamePrice={game.data.price}
+            gameThumbnail={game.data.thumbnail}
+            gameImage={game.data.image}
+            variant="secondary"
+            size="small"
+            showPrice={true}
+          />
+        </div>
+        {MarkdownContent ? (
+          <div class="game-description markdown-content">
+            <MarkdownContent />
+          </div>
+        ) : (
+          <div>
+            <p class="game-description">{game.data.description}</p>
+          </div>
+        )}
+      </div>
+      
+      {/* Screenshots on the right */}
+      {(game.data.small_screenshots?.length > 0 || game.data.screenshots?.length > 0) && (
+        <div class="screenshots-sidebar">
+          {game.data.small_screenshots && game.data.small_screenshots.length > 0 ? (
+            <div class="screenshots-grid">
+              {game.data.small_screenshots.map((smallScreenshot, index) => (
+                <div 
+                  class="screenshot-thumb"
+                  style={`background-image: url('${smallScreenshot}')`}
+                  data-full-screenshot={game.data.screenshots?.[index] || smallScreenshot}
+                  data-game-title={game.data.title}
+                  data-screenshot-index={index}
+                  onclick="openScreenshot(this)"
+                ></div>
+              ))}
+            </div>
+          ) : game.data.screenshots && game.data.screenshots.length > 0 ? (
+            <div class="screenshots-grid">
+              {game.data.screenshots.map((screenshot, index) => (
+                <div 
+                  class="screenshot-thumb"
+                  style={`background-image: url('${screenshot}')`}
+                  data-full-screenshot={screenshot}
+                  data-game-title={game.data.title}
+                  data-screenshot-index={index}
+                  onclick="openScreenshot(this)"
+                ></div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      )}
+    </div>
+  
+  <div class="buy-button-container">
+    <BuyNowButton 
+      gameId={game.id}
+      gameTitle={game.data.title}
+      gamePrice={game.data.price}
+      gameThumbnail={game.data.thumbnail}
+      gameImage={game.data.image}
+      variant="primary"
+      size="normal"
+      showPrice={true}
+    />
+  </div>
+
+  {/* System Requirements */}
+  {siteConfig.layout.show_system_requirements && game.data.system_requirements && game.data.system_requirements.length > 0 && (
+    <div class="system-requirements">
+      <strong>System Requirements:</strong>
+      <ul>
+        {game.data.system_requirements.map((req) => (
+          <li><strong>{req.platform}:</strong> {req.requirements}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+  
+  {/* File Info */}
+  <div class="file-info">
+    <p class="file-count">{game.data.files.length} download{game.data.files.length !== 1 ? 's' : ''} available</p>
+    <p class="total-size">
+      Total size: {game.data.files.reduce((sum, f) => sum + f.size_gb, 0).toFixed(1)} GB
+    </p>
+  </div>
+</div>

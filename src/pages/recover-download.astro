@@ -1,0 +1,126 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Recover Download Links">
+  <div class="content-section">
+    <h1>Recover Your Download Links</h1>
+    <p>Lost your download link? Enter the email address you used for your purchase and we'll send you fresh download links.</p>
+
+    <form id="recovery-form">
+      <div class="form-group">
+        <label for="email">Email Address:</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          required
+          placeholder="your-email@example.com"
+          class="email-input"
+        />
+      </div>
+      
+      <button 
+        type="submit" 
+        class="primary-button"
+        id="submit-btn"
+      >
+        Send Download Links
+      </button>
+    </form>
+    
+    <div id="message" style="margin-top: 1.5rem; padding: 1rem; border-radius: 6px; display: none;"></div>
+    
+    <div >
+      <h2>Need Help?</h2>
+      <p>
+        If you continue to have trouble accessing your downloads, please contact our support team at 
+        <a href="mailto:support@example.com">support@example.com</a>
+      </p>
+      
+      <p>
+        <a href="/">← Back to Store</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('recovery-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const messageDiv = document.getElementById('message') as HTMLDivElement;
+
+    function showMessage(text: string, isError: boolean = false) {
+      messageDiv.textContent = text;
+      messageDiv.style.display = 'block';
+      messageDiv.style.backgroundColor = isError ? '#fef2f2' : '#f0f9ff';
+      messageDiv.style.color = isError ? '#dc2626' : '#1e40af';
+      messageDiv.style.border = `1px solid ${isError ? '#fecaca' : '#bfdbfe'}`;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const email = formData.get('email') as string;
+      
+      if (!email) {
+        showMessage('Please enter your email address.', true);
+        return;
+      }
+
+      // Update button state
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      messageDiv.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/recover-download', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage(data.message);
+          form.reset();
+          
+          // Show debug info in development
+          if (data.debug?.purchases) {
+            console.log('Found purchases:', data.debug.purchases);
+            const debugInfo = data.debug.purchases
+              .map((p: any) => `• ${p.gameTitle} (purchased ${new Date(p.purchaseDate).toLocaleDateString()})`)
+              .join('\n');
+            showMessage(data.message + '\n\nDEV MODE - Purchases found:\n' + debugInfo);
+          }
+        } else {
+          showMessage(data.error || 'An error occurred. Please try again.', true);
+        }
+      } catch (error) {
+        console.error('Recovery request failed:', error);
+        showMessage('Network error. Please check your connection and try again.', true);
+      } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  </script>
+</Layout>
+
+<style>
+.email-input {
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  margin-top: 0.5rem;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 1rem;
+}
+
+</style>

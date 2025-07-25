@@ -1,0 +1,128 @@
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .site-container, .narrow-container {
+    padding: 0 1rem;
+  }
+  
+  .header-content {
+    padding: 0 1rem;
+  }
+  
+  .hero-section {
+    margin: -3rem -1rem 3rem -1rem;
+    padding: 3rem 1rem;
+  }
+  
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-description {
+    font-size: 1.1rem;
+  }
+  
+  .games-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .game-card {
+    border-radius: 8px;
+  }
+  
+  .screenshots-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .screenshot-thumb {
+    min-height: 70px;
+  }
+  
+  .lightbox-content {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+  
+  .lightbox-image-container {
+    max-height: 60vh;
+  }
+  
+  .lightbox-image-container img {
+    max-height: 60vh;
+  }
+  
+  .lightbox-close {
+    top: -40px;
+    width: 35px;
+    height: 35px;
+    font-size: 1.25rem;
+  }
+  
+  .nav-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .system-requirements, .file-info {
+    padding: 0.75rem;
+  }
+  
+  .modal-content {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+  
+  .modal-header, .modal-body {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-content {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+    padding: 0 1rem;
+  }
+  
+  .nav-links {
+    gap: 1rem;
+  }
+  
+  .hero-section {
+    margin: -3rem -1rem 3rem -1rem;
+    padding: 2rem 1rem;
+  }
+  
+  .hero-section h1 {
+    font-size: 1.75rem;
+  }
+  
+  .screenshots-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .screenshot-thumb {
+    min-height: 60px;
+  }
+  
+  .lightbox-navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .nav-button {
+    padding: 0.75rem 1.5rem;
+    min-width: 120px;
+  }
+  
+  .logo {
+    font-size: 1.25rem;
+  }
+  
+  .nav-link {
+    font-size: 0.9rem;
+  }
+}

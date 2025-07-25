@@ -1,0 +1,93 @@
+- id: demo-game
+  title: "My Game"
+  # This is the price that will be charged, in the currency specified in the store config.
+  price: 15.00
+  description: "This is a game"
+  # A wide banner image that will be used as the cover for the game.
+  cover: "/images/demo-game/cover.jpg"
+  # A smaller thumbnail that will be used as a small representation of the game
+  thumbnail: "/images/demo-game/thumbnail.jpg"
+  files:
+    # This is an array, you can put whatever platforms and files you want in here
+    - name: "Windows (64-bit)"
+      filename: "my-game-win32-x64.zip"
+      size_gb: 0.500
+      description: "For Windows 10+ (64-bit)"
+    - name: "Linux (64-bit)"
+      filename: "my-game-linux-x64.zip"
+      size_gb: 0.500
+      description: "For Linux (64-bit)"
+    - name: "MacOS (64-bit)"
+      filename: "my-game-macos-x64.zip"
+      size_gb: 0.500
+      description: "For MacOS (64-bit)"
+  release_date: "2023-10-01"
+  # Featured games appear first
+  featured: true
+  # This is an array of high-res screenshots that will be shown when clicked on
+  screenshots:
+    - "/images/demo-game/screenshot-1.jpg"
+    - "/images/demo-game/screenshot-2.jpg"
+    - "/images/demo-game/screenshot-3.jpg"
+    - "/images/demo-game/screenshot-4.jpg"
+  # This is an array of smaller screenshot thumbnails that should correspond to the screenshots above
+  small_screenshots:
+    - "/images/demo-game/screenshot-1-small.jpg"
+    - "/images/demo-game/screenshot-2-small.jpg"
+    - "/images/demo-game/screenshot-3-small.jpg"
+    - "/images/demo-game/screenshot-4-small.jpg"
+  # This is an array of system requirements, you can put whatever platforms and requirements you want in here
+  system_requirements:
+    - platform: "Windows"
+      requirements: "Windows 7, 4GB Ram"
+    - platform: "Linux"
+      requirements: "Linux 4.15, 4GB Ram"
+    - platform: "MacOS"
+      requirements: "MacOS 10.15, 4GB Ram"
+  # Leaving this game here as an example if you want to see how having multiple games works. To remove or add games, copy this block and change the id, title, and other fields as needed. Or just delete it.
+- id: demo-game-2
+  title: "Second game"
+  # This is the price that will be charged, in the currency specified in the store config.
+  price: 15.00
+  description: "This is another game"
+  # A wide banner image that will be used as the cover for the game.
+  cover: "/images/demo-game/cover.jpg"
+  # A smaller thumbnail that will be used as a small representation of the game
+  thumbnail: "/images/demo-game/thumbnail.jpg"
+  files:
+    # This is an array, you can put whatever platforms and files you want in here
+    - name: "Windows (64-bit)"
+      filename: "my-game-win32-x64.zip"
+      size_gb: 0.500
+      description: "For Windows 10+ (64-bit)"
+    - name: "Linux (64-bit)"
+      filename: "my-game-linux-x64.zip"
+      size_gb: 0.500
+      description: "For Linux (64-bit)"
+    - name: "MacOS (64-bit)"
+      filename: "my-game-macos-x64.zip"
+      size_gb: 0.500
+      description: "For MacOS (64-bit)"
+  release_date: "2023-10-01"
+  # Featured games appear first
+  featured: true
+  # This is an array of high-res screenshots that will be shown when clicked on
+  screenshots:
+    - "/images/demo-game/screenshot-1.jpg"
+    - "/images/demo-game/screenshot-2.jpg"
+    - "/images/demo-game/screenshot-3.jpg"
+    - "/images/demo-game/screenshot-4.jpg"
+  # This is an array of smaller screenshot thumbnails that should correspond to the screenshots above
+  small_screenshots:
+    - "/images/demo-game/screenshot-1-small.jpg"
+    - "/images/demo-game/screenshot-2-small.jpg"
+    - "/images/demo-game/screenshot-3-small.jpg"
+    - "/images/demo-game/screenshot-4-small.jpg"
+  # This is an array of system requirements, you can put whatever platforms and requirements you want in here
+  system_requirements:
+    - platform: "Windows"
+      requirements: "Windows 7, 4GB Ram"
+    - platform: "Linux"
+      requirements: "Linux 4.15, 4GB Ram"
+    - platform: "MacOS"
+      requirements: "MacOS 10.15, 4GB Ram"
