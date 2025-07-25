@@ -30,6 +30,7 @@ For more details on how each service is setup, and information to run this templ
 
 This template uses **free/cheap cloud services** to perform the following tasks:
 
+- [Astro](https://astro.build) Not a cloud service, but the framework used to build the website. If you want to find out how something works in this, Astro docs will likely be your friend.
 - Web hosting: [Vercel](https://vercel.com) (free tier)
 - Payment processing: [Stripe](https://stripe.com) (2.9% + $0.30 per transaction, 0.5% for VAT handling)
 - Email delivery: [Resend](https://resend.com) (free for 3,000 emails/month, then $20/month for 50,000 emails)
@@ -58,9 +59,9 @@ This template uses **free/cheap cloud services** to perform the following tasks:
 
 This template is meant to be easily customizable. Here are some easy ways to customize it:
 
-- Look at the `src/content/games.yaml` file to add your games.
+- Look at the `src/content/games.yaml` file to add your games. You can also create markdown files for each game in `content/game-descriptions/` to customise the content of each game's page.
 - Edit `src/config/site.ts` to change your studio name, email, and other site details.
-- Change theme variables in `src/styles/variables.css` to match your branding, or edit other CSS files in there.
+- Change colors and theme variables in `src/styles/variables.css` to match your branding, or edit other CSS files in there.
 - Edit the general site layout in `src/layouts/Layout.astro` and the other files it uses to change the header, footer, and other common elements.
 - Create new pages in `src/pages/` using markdown file or Astro components.
 - Update the `terms` and `privacy` pages with your own legal text.
