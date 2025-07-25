@@ -354,14 +354,22 @@ Copy the webhook secret from the output and add it to your `.env.local` file.
 
 ### Deploy to Production
 
+#### Setup Repository
+
+1. If you haven't already, create your repo on github or gitlab (you can do this by forking this template repository if you want)
+2. Push your local changes to the remote repository
+3. Unfortunately Vercel doesn't allow private repositories on the free plan, so if you don't want to pay for Vercel you will need to make your repository public. Make sure to not include any sensitive information in your repository, such as the API keys, or builds of your game. You can add files and folders to `.gitignore` to prevent them from being committed.
+
 #### Setup Vercel Account
 
 1. Create account at [vercel.com](https://vercel.com)
-2. Connect your GitHub repository or some other Git provider to import your project
+2. Create a project
+3. Connect your GitHub repository or some other Git provider to import your project
+4. Add your domain to Vercel (buy one if you don't have one yet, you need it for Resend too)
 
 #### Configure Environment Variables
 
-In Vercel Dashboard → Settings → Environment Variables, add:
+In Vercel Dashboard → Settings → Environment Variables, add the following variables:
 
 ```
 STRIPE_PUBLISHABLE_KEY=pk_live_your_live_key
@@ -373,6 +381,9 @@ R2_SECRET_ACCESS_KEY=your_r2_secret_key
 R2_BUCKET_NAME=your_r2_bucket_name
 R2_ACCOUNT_ID=your_r2_account_id
 # Optional: R2_REGION=auto (or your specific region)
+# Those upstash redis keys will be obtained in the next step
+UPSTASH_REDIS_REST_URL=your_upstash_redis_rest_url_here
+UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_rest_token_here
 
 ```
 
@@ -381,7 +392,8 @@ R2_ACCOUNT_ID=your_r2_account_id
 1. In Vercel Dashboard → Integrations → Browse Marketplace
 2. Search for "Upstash" and install the Upstash integration
 3. Create a new Redis database (free tier available)
-4. Connect to your project - environment variables are automatically added
+4. Connect to your project
+5. In the storage page you were in, the "Quickstart" section has a "TypeScript" button. Click it and look at the two tokens in the sample code. You can click "Show secret" and copy them to fill the `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` in your Vercel environment variables (and in your local `.env.local` file if you want persistent storage for development testing).
 
 #### Deploy
 
@@ -557,7 +569,7 @@ Use any future expiry date, any CVC, and any postal code.
 
 ### Analytics
 
-Add your preferred analytics (Google Analytics, Simple Analytics, etc.) to the layout if you want to track visits and sales.
+There is no analytics included. If you want to use analytics, you can add it yourself.
 
 ### Detailed Cost Breakdown
 
