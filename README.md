@@ -45,6 +45,7 @@ This template is meant to be easily customizable. Here are some easy ways to cus
 - Change theme variables in `src/styles/variables.css` to match your branding, or edit other CSS files in there.
 - Edit the general site layout in `src/layouts/Layout.astro` and the other files it uses to change the header, footer, and other common elements.
 - Create new pages in `src/pages/` using markdown file or Astro components.
+- Update the `terms` and `privacy` pages with your own legal text.
 - Edit the astro files, typescript and any other code in the template for more advanced customization.
 
 ## Other Requirements
