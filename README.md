@@ -50,6 +50,7 @@ This template is meant to be easily customizable. Here are some easy ways to cus
 ## Other Requirements
 
 - Ability to follow instructions (going in control panels of various services, entering terminal commands, etc.)
+- Ability to clone a git repo and push changes to it
 - Some free time to create all the accounts and configure the services
 - Ability to edit simple config files (I recommend opening this folder in [VS Code](https://code.visualstudio.com/) or similar editor)
 - If you want to change the style of your website, understanding of basic HTML/CSS to customise this template
