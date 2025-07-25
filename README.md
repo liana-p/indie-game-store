@@ -20,9 +20,11 @@ Adult content may violate the terms of service of some services used in this tem
 
 ## Quick Start
 
-If you want to deploy this straight to Vercel, use this button. You will need to create accounts with the other cloud services listed below and enter the relevant API key environment variables (also explained below)
+If you want to deploy this straight to Vercel, use this button. You will need to create accounts with the other cloud services listed below and enter the relevant API key environment variables (also explained below).
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fliana-p%2Findie-game-store&env=STRIPE_PUBLISHABLE_KEY,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,RESEND_API_KEY,R2_ACCESS_KEY_ID,R2_SECRET_ACCESS_KEY,R2_BUCKET_NAME,R2_ACCOUNT_ID,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN&envDescription=API%20keys%20needed%20to%20use%20the%20various%20services%20this%20template%20requires&envLink=https%3A%2F%2Fgithub.com%2Fliana-p%2Findie-game-store%3Ftab%3Dreadme-ov-file%23configure-environment-variables&project-name=my-game-store&repository-name=my-game-store&demo-title=Example%20Store&demo-description=My%20store%20using%20this%20template&demo-url=https%3A%2F%2Fwalk-through-the-forest.ovh%2F)
+
+For more details on how each service is setup, and information to run this template locally for testing, jump to the [Setup Guide](#-setup-guide) section below.
 
 ## 🌩️ Services Used
 
@@ -34,7 +36,23 @@ This template uses **free/cheap cloud services** to perform the following tasks:
 - Purchase storage: [Upstash Redis](https://upstash.com) (free for 10,000 requests/day) - this is used to serve game downloads, and is integrated with Vercel
 - File storage: [Cloudflare R2](https://www.cloudflare.com/products/r2/) (free for 30GB/month, then $0.015/GB) or [Bunny.net CDN](https://bunny.net) (free for 1TB transfer, then $0.01/GB)
 - GitHub or Gitlab to host your repository (it has to be a public repository if you want to use the free tier on Vercel, so make sure to not include any sensitive information in your repository)
-- You should also have a domain name for your store, which you can purchase from any domain registrar.
+- You should also have a domain name for your store, which you can purchase from any domain registrar. Vercel provides domain registration, or you can go with [Namecheap](https://www.namecheap.com) or others. If you really want to save money, OVH sells the [.ovh TLD](https://www.ovhcloud.com/en-gb/domains/tld/ovh/) for ~£3/year, which is pretty cheap.
+
+## Pros and cons
+
+### Pros
+
+- **Cheap, low fees**: All services used here have free tier, the only upfront cost is having a domain name. You would have to sell a lot of copies of your game to start having to pay for the hosting or providers.
+- **Ready to go**: This template is ready to use, all you have to do is setup your accounts, add your game details, and deploy it.
+- **Fully in control**: It's your website, on your domain, and you run it yourself. You can customise the site however you want
+- **Censorship resistant**: You are not dependent on any platform's rules, you can sell your game however you want.
+
+### Cons
+
+- **Depends on multiple thid-party companies**: You are relying on a collection of cloud services to run your store. Any of those companies could change their terms of service, pricing, or even shut down. I hope to eventually implement alternative providers for each service to make it easier for people to switch between different providers.
+- **Still dependent on Stripe TOS**: It is unlikely that Stripe pays any attention to your small indie game, but technically you do have to comply with their TOS. If you don't and get banned from Stripe, consider whether you might need to use it for other projects and whether a risk of being banned is a problem for you.
+- **Requires a bit of effort to set up**: This is not as easy as making a wix website, you will need to configure multiple services, create accounts, set environment variables and edit config files.
+- **You're on your own**: This template is just a template, it does not come with any support or guarantees.
 
 ## Customisation
 
