@@ -333,6 +333,7 @@ If you want to test the full purchase flow locally (again, you really should), y
 
 This is what makes your local test server receive events from Stripe when a purchase is made. Only required when you are testing locally.
 
+- Add the webhook config to your test sandbox like in production below, you can use a fake url if you don't have the real domain yet, we're going to forward it to your local server anyway.
 - Run `stripe listen --forward-to localhost:4321/api/webhook`
 - (or `.\stripe listen --forward-to localhost:4321/api/webhook`)
 - **Keep this terminal window open** - it needs to stay running
@@ -342,7 +343,7 @@ This is what makes your local test server receive events from Stripe when a purc
 
 1. In Stripe Dashboard, go to **Developers → Webhooks**
 2. Click **Add endpoint**
-3. Enter URL: `https://your-site.vercel.app/api/webhook` <-- Replace with your actual production URL
+3. Enter URL: `https://your-domain.com/api/webhook` <-- Replace with your actual production URL
 4. Select event: `checkout.session.completed`
 5. Copy the webhook secret and add to Vercel environment variables
 
@@ -642,7 +643,3 @@ No support is provided.
 ## 📄 License
 
 MIT License - see LICENSE file for details.
-
-## 🙏 Contributing
-
-Contributions are welcome! Especially if you are able to implement alternate service providers to give more choices to developers.
