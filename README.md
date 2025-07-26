@@ -30,14 +30,18 @@ For more details on how each service is setup, and information to run this templ
 
 This template uses **free/cheap cloud services** to perform the following tasks:
 
-- [Astro](https://astro.build) Not a cloud service, but the framework used to build the website. If you want to find out how something works in this, Astro docs will likely be your friend.
-- Web hosting: [Vercel](https://vercel.com) (free tier)
-- Payment processing: [Stripe](https://stripe.com) (2.9% + $0.30 per transaction, 0.5% for VAT handling)
-- Email delivery: [Resend](https://resend.com) (free for 3,000 emails/month, then $20/month for 50,000 emails)
-- Purchase storage: [Upstash Redis](https://upstash.com) (free for 10,000 requests/day) - this is used to serve game downloads, and is integrated with Vercel
+- Framework: [Astro](https://astro.build) Not a cloud service, but the framework used to build the website. If you want to find out how something works in this, Astro docs will likely be your friend.
+- Web hosting: [Vercel](https://vercel.com) ([pricing page](https://vercel.com/docs/pricing)) (free tier) - You could use other hosting providers, but because we need server side code to handle Stripe payments and download recovery, there aren't many free options and this is super easy to use.
+- Payment processing: [Stripe](https://stripe.com) ([pricing page](https://stripe.com/gb/pricing))(2.9% + $0.30 per transaction, 0.5% for VAT handling)
+- Email delivery: [Resend](https://resend.com) ([pricing page](https://resend.com/pricing)) (free for 3,000 emails/month, then $20/month for 50,000 emails)
+- Purchase storage: [Upstash Redis](https://upstash.com) ([pricing page](https://upstash.com/pricing)) (free for 500,000 commands a month, 256MB data size) - this is used to serve game downloads, and is integrated with Vercel. Given that we only store small purchase records and only access them to download, you're unlikely to ever hit the free tier limits.
 - File storage: [Cloudflare R2](https://www.cloudflare.com/products/r2/) (free for 30GB/month, then $0.015/GB) or [Bunny.net CDN](https://bunny.net) (free for 1TB transfer, then $0.01/GB)
 - GitHub or Gitlab to host your repository (it has to be a public repository if you want to use the free tier on Vercel, so make sure to not include any sensitive information in your repository)
 - You should also have a domain name for your store, which you can purchase from any domain registrar. Vercel provides domain registration, or you can go with [Namecheap](https://www.namecheap.com) or others. If you really want to save money, OVH sells the [.ovh TLD](https://www.ovhcloud.com/en-gb/domains/tld/ovh/) for ~£3/year, which is pretty cheap.
+
+## Contributions wanted
+
+Ideally I'd want this template to abstract away the cloud providers as much as possible so that you can easily switch between them. This is especially relevant for payment processors. The more providers are supported, the more people can use this template without worrying about a free service disappearing or changing.
 
 ## Pros and cons
 
@@ -93,6 +97,8 @@ Detailed cost breakdown further below.
 ## 🚀 Setup Guide
 
 This repository is a template, so you can download it as-is, configure it for your game, and then modify it as needed.
+
+All of the tools used in this template are very common and well-documented, so if you are confused about something, you can likely find the answer online.
 
 ### Prerequisites
 
