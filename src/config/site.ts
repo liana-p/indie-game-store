@@ -51,7 +51,7 @@ export const siteConfig = {
 
   // File storage configuration
   file_storage: {
-    provider: "cloudflare-r2" as const, // or "bunny-net" or "local"
+    provider: "s3" as const, // or "bunny-net" or "local"
     download_expires_hours: 48,
     max_downloads_per_purchase: 50000,
   },
