@@ -1,89 +1,83 @@
-// File storage abstraction for game downloads
-
 export interface FileStorageAdapter {
-  // Generate a secure, time-limited download URL
   generateDownloadUrl(gameId: string, fileName: string, expiresInHours?: number): Promise<string>;
-  
-  // Upload a file (for future admin interface)
   uploadFile?(gameId: string, fileName: string, fileBuffer: Buffer): Promise<string>;
-  
-  // Check if the service is properly configured
   isConfigured(): boolean;
-  
-  // Get service name for logging
   getServiceName(): string;
 }
 
-export interface DownloadUrlOptions {
-  expiresInHours?: number;
-  maxDownloads?: number;
-  customToken?: string;
-}
+export type S3ProviderName = 'aws' | 'r2' | 'backblaze' | 'custom';
 
-// Cloudflare R2 implementation
-class CloudflareR2Adapter implements FileStorageAdapter {
+class GenericS3Adapter implements FileStorageAdapter {
   private accessKeyId: string;
   private secretAccessKey: string;
   private bucketName: string;
-  private accountId: string;
   private region: string;
-  private customDomain?: string;
+  private endpoint: string;
+  private forcePathStyle: boolean;
+  private providerName: S3ProviderName;
 
   constructor() {
-    this.accessKeyId = import.meta.env.R2_ACCESS_KEY_ID || '';
-    this.secretAccessKey = import.meta.env.R2_SECRET_ACCESS_KEY || '';
-    this.bucketName = import.meta.env.R2_BUCKET_NAME || '';
-    this.accountId = import.meta.env.R2_ACCOUNT_ID || '';
-    this.region = import.meta.env.R2_REGION || 'auto';
-    this.customDomain = import.meta.env.R2_CUSTOM_DOMAIN;
+    this.providerName = (import.meta.env.S3_PROVIDER || 'aws').toLowerCase() as S3ProviderName;
+    this.accessKeyId = import.meta.env.S3_ACCESS_KEY_ID || '';
+    this.secretAccessKey = import.meta.env.S3_SECRET_ACCESS_KEY || '';
+    this.bucketName = import.meta.env.S3_BUCKET_NAME || '';
+    this.region = import.meta.env.S3_REGION || 'auto';
+    this.forcePathStyle = (import.meta.env.S3_FORCE_PATH_STYLE === 'true');
+
+    switch (this.providerName) {
+      case 'r2':
+        this.endpoint = import.meta.env.S3_ENDPOINT || `https://${import.meta.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+        // R2 typically needs forcePathStyle true
+        this.forcePathStyle = true;
+        break;
+      case 'backblaze':
+        this.endpoint = import.meta.env.S3_ENDPOINT || 'https://s3.us-west-002.backblazeb2.com';
+        break;
+      case 'custom':
+        this.endpoint = import.meta.env.S3_ENDPOINT || '';
+        break;
+      case 'aws':
+      default:
+        this.endpoint = import.meta.env.S3_ENDPOINT || ''; // AWS SDK uses default if empty
+        break;
+    }
   }
 
   isConfigured(): boolean {
-    const configured = !!(this.accessKeyId && this.secretAccessKey && this.bucketName && this.accountId);
+    const configured = !!(this.accessKeyId && this.secretAccessKey && this.bucketName);
     if (configured) {
-      console.log('🔧 [R2] Configuration check:');
-      console.log('🔧 [R2] Access Key ID:', this.accessKeyId ? `${this.accessKeyId.substring(0, 8)}...` : 'NOT SET');
-      console.log('🔧 [R2] Secret Key:', this.secretAccessKey ? `${this.secretAccessKey.substring(0, 8)}...` : 'NOT SET');
-      console.log('🔧 [R2] Bucket Name:', this.bucketName);
-      console.log('🔧 [R2] Account ID:', this.accountId);
-      console.log('🔧 [R2] Region:', this.region);
-      console.log('🔧 [R2] Endpoint:', `https://${this.accountId}.r2.cloudflarestorage.com`);
+      console.log(`🔧 [S3] Using provider: ${this.providerName}`);
+      console.log(`🔧 [S3] Access Key ID: ${this.accessKeyId.substring(0, 8)}...`);
+      console.log(`🔧 [S3] Bucket Name: ${this.bucketName}`);
+      console.log(`🔧 [S3] Region: ${this.region}`);
+      console.log(`🔧 [S3] Endpoint: ${this.endpoint || '(default AWS endpoint)'}`);
+      console.log(`🔧 [S3] Force Path Style: ${this.forcePathStyle}`);
     }
     return configured;
   }
 
   getServiceName(): string {
-    return 'Cloudflare R2';
+    return `S3 (${this.providerName})`;
   }
 
   async generateDownloadUrl(gameId: string, fileName: string, expiresInHours = 48): Promise<string> {
     if (!this.isConfigured()) {
-      throw new Error('Cloudflare R2 not configured');
+      throw new Error('S3-compatible storage not configured');
     }
-
     try {
-      // Import AWS SDK dynamically to avoid bundling issues
       const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
       const { getSignedUrl } = await import('@aws-sdk/s3-request-presigner');
 
-      // Create S3 client configured for Cloudflare R2
       const s3Client = new S3Client({
-        region: 'us-east-1', // R2 works better with a specific region instead of 'auto'
-        endpoint: `https://${this.accountId}.r2.cloudflarestorage.com`,
+        region: this.region,
+        endpoint: this.endpoint || undefined,
         credentials: {
           accessKeyId: this.accessKeyId,
           secretAccessKey: this.secretAccessKey,
         },
-        // R2-specific configuration
-        forcePathStyle: true,
+        forcePathStyle: this.forcePathStyle,
       });
-      
-      console.log('🔧 [R2] S3 Client configured with:');
-      console.log('🔧 [R2] Region: us-east-1');
-      console.log('🔧 [R2] Endpoint:', `https://${this.accountId}.r2.cloudflarestorage.com`);
-      console.log('🔧 [R2] Force Path Style: true');
 
-      // Generate signed URL for the file
       const objectKey = `${gameId}/${fileName}`;
       const command = new GetObjectCommand({
         Bucket: this.bucketName,
@@ -91,26 +85,24 @@ class CloudflareR2Adapter implements FileStorageAdapter {
       });
 
       const signedUrl = await getSignedUrl(s3Client, command, {
-        expiresIn: expiresInHours * 60 * 60, // Convert hours to seconds
+        expiresIn: expiresInHours * 3600,
       });
 
-      console.log(`Generated R2 signed URL for ${objectKey}, expires in ${expiresInHours}h`);
+      console.log(`Generated signed URL for ${objectKey}, expires in ${expiresInHours}h`);
       return signedUrl;
 
     } catch (error) {
-      console.error('Failed to generate R2 signed URL:', error);
-      
-      // Fallback to our own download endpoint
+      console.error('Failed to generate signed URL:', error);
+
       const token = this.generateSecureToken(gameId, fileName, expiresInHours);
       const baseUrl = import.meta.env.DEV ? 'http://localhost:4321' : import.meta.env.SITE_URL || '';
-      
+
       console.log('Falling back to internal download endpoint');
       return `${baseUrl}/api/download?gameId=${gameId}&token=${token}`;
     }
   }
 
   private generateSecureToken(gameId: string, fileName: string, expiresInHours: number): string {
-    // Simple token generation for fallback
     const expiry = Date.now() + (expiresInHours * 60 * 60 * 1000);
     const payload = `${gameId}:${fileName}:${expiry}`;
     return Buffer.from(payload).toString('base64url');
@@ -142,20 +134,13 @@ class BunnyNetAdapter implements FileStorageAdapter {
       throw new Error('Bunny.net not configured');
     }
 
-    // Generate signed URL for Bunny.net
-    const expiry = Math.floor(Date.now() / 1000) + (expiresInHours * 60 * 60);
-    const filePath = `${gameId}/${fileName}`;
-    
-    // For now, return a placeholder URL that points to our download endpoint
-    // In a full implementation, this would generate a signed Bunny.net URL
     const token = this.generateSecureToken(gameId, fileName, expiresInHours);
     const baseUrl = import.meta.env.DEV ? 'http://localhost:4321' : import.meta.env.SITE_URL || '';
-    
+
     return `${baseUrl}/api/download?gameId=${gameId}&token=${token}`;
   }
 
   private generateSecureToken(gameId: string, fileName: string, expiresInHours: number): string {
-    // Simple token generation - in production, use proper JWT or similar
     const expiry = Date.now() + (expiresInHours * 60 * 60 * 1000);
     const payload = `${gameId}:${fileName}:${expiry}`;
     return Buffer.from(payload).toString('base64url');
@@ -184,65 +169,37 @@ class LocalFileAdapter implements FileStorageAdapter {
   }
 }
 
-// File storage configuration
-export type FileStorageProvider = 'cloudflare-r2' | 'bunny-net' | 'local';
+export type FileStorageProvider = 's3' | 'bunny-net' | 'local';
 
 export function getFileStorageProvider(): FileStorageProvider {
-  const provider = import.meta.env.FILE_STORAGE_PROVIDER?.toLowerCase();
-  
+  const provider = (import.meta.env.FILE_STORAGE_PROVIDER || '').toLowerCase();
   switch (provider) {
-    case 'cloudflare-r2':
-    case 'r2':
-      return 'cloudflare-r2';
+    case 's3':
+      return 's3';
     case 'bunny-net':
     case 'bunny':
       return 'bunny-net';
     case 'local':
       return 'local';
     default:
-      // Auto-detect based on available configuration
-      const r2Adapter = new CloudflareR2Adapter();
-      const bunnyAdapter = new BunnyNetAdapter();
-      
-      if (r2Adapter.isConfigured()) {
-        return 'cloudflare-r2';
-      } else if (bunnyAdapter.isConfigured()) {
-        return 'bunny-net';
-      } else {
-        return 'local';
-      }
+      const s3 = new GenericS3Adapter();
+      const bunny = new BunnyNetAdapter();
+      if (s3.isConfigured()) return 's3';
+      if (bunny.isConfigured()) return 'bunny-net';
+      return 'local';
   }
 }
 
-// Storage adapter factory
 export function getFileStorageAdapter(): FileStorageAdapter {
   const provider = getFileStorageProvider();
-  
   switch (provider) {
-    case 'cloudflare-r2':
-      return new CloudflareR2Adapter();
+    case 's3':
+      return new GenericS3Adapter();
     case 'bunny-net':
       return new BunnyNetAdapter();
     case 'local':
       return new LocalFileAdapter();
     default:
       throw new Error(`Unknown file storage provider: ${provider}`);
-  }
-}
-
-// Utility to validate and parse download tokens
-export function parseDownloadToken(token: string): { gameId: string; fileName: string; expiry: number } | null {
-  try {
-    const payload = Buffer.from(token, 'base64url').toString();
-    const [gameId, fileName, expiryStr] = payload.split(':');
-    const expiry = parseInt(expiryStr, 10);
-    
-    if (!gameId || !fileName || !expiry || isNaN(expiry)) {
-      return null;
-    }
-    
-    return { gameId, fileName, expiry };
-  } catch {
-    return null;
   }
 }
