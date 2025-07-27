@@ -21,7 +21,7 @@ class GenericS3Adapter implements FileStorageAdapter {
     this.accessKeyId = import.meta.env.S3_ACCESS_KEY_ID || '';
     this.secretAccessKey = import.meta.env.S3_SECRET_ACCESS_KEY || '';
     this.bucketName = import.meta.env.S3_BUCKET_NAME || '';
-    this.region = import.meta.env.S3_REGION || 'us-east-1';
+    this.region = import.meta.env.S3_REGION || 'auto';
     this.forcePathStyle = (import.meta.env.S3_FORCE_PATH_STYLE === 'true');
 
     switch (this.providerName) {

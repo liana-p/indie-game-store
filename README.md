@@ -35,13 +35,18 @@ This template uses **free/cheap cloud services** to perform the following tasks:
 - Payment processing: [Stripe](https://stripe.com) ([pricing page](https://stripe.com/gb/pricing))(2.9% + $0.30 per transaction, 0.5% for VAT handling)
 - Email delivery: [Resend](https://resend.com) ([pricing page](https://resend.com/pricing)) (free for 3,000 emails/month, then $20/month for 50,000 emails)
 - Purchase storage: [Upstash Redis](https://upstash.com) ([pricing page](https://upstash.com/pricing)) (free for 500,000 commands a month, 256MB data size) - this is used to store and retrieve purchase information before creating download links, and is integrated with Vercel. Given that we only store small purchase records and only access them to download, you're unlikely to ever hit the free tier limits.
-- File storage: You have several choices for file storage. You can use any S3-compatible API, Bunny.net CDN, or just local hosting.
+- File storage: You have several choices for file storage. You can use Cloudflare R2 (or any S3-compatible API), Bunny.net CDN, or just local hosting.
 - GitHub or Gitlab to host your repository (it has to be a public repository if you want to use the free tier on Vercel, so make sure to not include any sensitive information in your repository)
 - You should also have a domain name for your store, which you can purchase from any domain registrar. Vercel provides domain registration, or you can go with [Namecheap](https://www.namecheap.com) or others. If you really want to save money, OVH sells the [.ovh TLD](https://www.ovhcloud.com/en-gb/domains/tld/ovh/) for ~£3/year, which is pretty cheap.
 
 ## Contributions wanted
 
 Ideally I'd want this template to abstract away the cloud providers as much as possible so that you can easily switch between them. This is especially relevant for payment processors. The more providers are supported, the more people can use this template without worrying about a free service disappearing or changing.
+
+# Configuring Cloudflare R2
+R2 has different names for some aspects, so we will cover them here.
+
+To create the keys for R2, go to the [Cloudflare Dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens). (The link here will take you directly to the key creation screen.) Then, click "Create Account API Token". If you want, you can select "Admin Read & Write", but we recommend using "Object Read & Write". For buckets, choose "Apply to all buckets in this account (including newly created buckets)". Then click the create button at the bottom of the page. Use the "Access Key ID" as the `S3_ACCESS_KEY_ID` environment variable, and the "Secret Access Key" as the `S3_SECRET_ACCESS_KEY` variable. Then, set `S3_BUCKET_NAME` to your bucket's name.
 
 ## Pros and cons
 
