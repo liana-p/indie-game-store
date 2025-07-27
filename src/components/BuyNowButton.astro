@@ -46,7 +46,8 @@ const buttonClass = `buy-button ${variant} ${size}`;
 ) : (
   <button 
     class={buttonClass}
-    onclick={`buyGame('${gameId}')`}
+    onclick={`buyGame('${gameId}', 'stripe')`}
+    // The "stripe" is just a placeholder, it's replaced during the checkout script.
     data-game-id={gameId}
     data-game-title={gameTitle}
     data-game-price={gamePrice}

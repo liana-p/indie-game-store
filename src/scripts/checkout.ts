@@ -1,8 +1,8 @@
-// TypeScript client-side script for Stripe checkout
 import { loadStripe } from '@stripe/stripe-js';
 
 interface CheckoutResponse {
   sessionId?: string;
+  url?: string;
   error?: string;
   code?: string;
   recoveryUrl?: string;
@@ -10,60 +10,50 @@ interface CheckoutResponse {
 
 class CheckoutManager {
   private stripe: any = null;
-  private stripePromise: Promise<any>;
+  private stripePromise: Promise<any> | null = null;
+  private stripeKey: string | null;
 
-  constructor(publishableKey: string) {
-    this.stripePromise = loadStripe(publishableKey);
-    this.init();
+  constructor(stripeKey: string | null) {
+    this.stripeKey = stripeKey;
+    if (stripeKey) {
+      this.stripePromise = loadStripe(stripeKey);
+    }
   }
 
-  private async init() {
-    this.stripe = await this.stripePromise;
+  private async initStripe() {
+    if (this.stripePromise) {
+      this.stripe = await this.stripePromise;
+    }
   }
 
-  async buyGame(gameId: string, buttonElement: HTMLButtonElement): Promise<void> {
-    if (!this.stripe) {
-      await this.init();
-    }
-
-    if (!this.stripe) {
-      alert('Payment system unavailable. Please refresh and try again.');
-      return;
-    }
-
+  async buyGame(gameId: string, provider: string, buttonElement: HTMLButtonElement): Promise<void> {
     try {
-      // Update button state
       const originalText = buttonElement.textContent || 'Buy Now';
       buttonElement.disabled = true;
       buttonElement.textContent = 'Loading...';
 
-      // Get customer email first
-      const email = await this.getCustomerEmail();
-      if (!email) {
-        // User cancelled email input
+      const emailData = await this.getCustomerEmail();
+      if (!emailData) {
         buttonElement.disabled = false;
         buttonElement.textContent = originalText;
         return;
       }
 
-      // Create checkout session with email
-      const requestBody = JSON.stringify({ gameId, email });
-      console.log('Sending request body:', requestBody);
-      
+      console.log(emailData);
+      console.log("a");
+
+      const { email, provider } = emailData;
+
+      const requestBody = JSON.stringify({ gameId, email, provider });
       const response = await fetch('/api/checkout', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: requestBody,
       });
-      
-      console.log('Response status:', response.status);
 
       const data: CheckoutResponse = await response.json();
 
       if (data.error) {
-        // Handle duplicate purchase specially
         if (data.code === 'ALREADY_PURCHASED') {
           const goToRecovery = confirm(
             `${data.error}\n\nWould you like to go to the download recovery page?`
@@ -78,31 +68,38 @@ class CheckoutManager {
         throw new Error(data.error);
       }
 
-      if (!data.sessionId) {
-        throw new Error('No session ID received');
-      }
+      if (provider === 'stripe') {
+        await this.initStripe();
 
-      // Redirect to Stripe Checkout
-      const { error } = await this.stripe.redirectToCheckout({
-        sessionId: data.sessionId,
-      });
+        if (!this.stripe) {
+          throw new Error('Stripe is not initialized');
+        }
 
-      if (error) {
-        throw new Error(error.message);
+        const { error } = await this.stripe.redirectToCheckout({
+          sessionId: data.sessionId!,
+        });
+
+        if (error) {
+          throw new Error(error.message);
+        }
+      } else if (data.url) {
+        // Other providers may return a URL to redirect to
+        window.location.href = data.url;
+      } else {
+        throw new Error('No redirect information received');
       }
 
     } catch (err) {
       console.error('Checkout error:', err);
       const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
       alert('Error: ' + message);
-      
-      // Reset button state
+    } finally {
       buttonElement.disabled = false;
-      buttonElement.textContent = originalText;
+      buttonElement.textContent = 'Buy Now';
     }
   }
 
-  private async getCustomerEmail(): Promise<string | null> {
+  private async getCustomerEmail(): Promise<{ email: string; provider: string } | null> {
     return new Promise((resolve) => {
       const modal = document.getElementById('emailModal')!;
       const emailInput = document.getElementById('customerEmail') as HTMLInputElement;
@@ -111,18 +108,14 @@ class CheckoutManager {
       const closeModal = document.getElementById('closeModal')!;
       const cancelBtn = document.getElementById('cancelBtn')!;
 
-      // Show modal
       modal.style.display = 'flex';
       emailInput.focus();
       emailInput.value = '';
       emailError.style.display = 'none';
 
-      // Handle form submission
       const handleSubmit = (e: Event) => {
         e.preventDefault();
         const email = emailInput.value.toLowerCase().trim();
-        
-        // Basic email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
           emailError.textContent = 'Please enter a valid email address.';
@@ -131,34 +124,27 @@ class CheckoutManager {
           return;
         }
 
-        // Close modal and resolve with email
         modal.style.display = 'none';
         cleanup();
-        resolve(email);
+        const providerSelect = document.getElementById('paymentProvider') as HTMLSelectElement;
+        const provider = providerSelect.value;
+        resolve({ email, provider });
       };
 
-      // Handle cancellation
       const handleCancel = () => {
         modal.style.display = 'none';
         cleanup();
         resolve(null);
       };
 
-      // Handle outside click
       const handleOutsideClick = (e: Event) => {
-        if (e.target === modal) {
-          handleCancel();
-        }
+        if (e.target === modal) handleCancel();
       };
 
-      // Handle escape key
       const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          handleCancel();
-        }
+        if (e.key === 'Escape') handleCancel();
       };
 
-      // Cleanup function
       const cleanup = () => {
         emailForm.removeEventListener('submit', handleSubmit);
         closeModal.removeEventListener('click', handleCancel);
@@ -167,7 +153,6 @@ class CheckoutManager {
         document.removeEventListener('keydown', handleEscape);
       };
 
-      // Add event listeners
       emailForm.addEventListener('submit', handleSubmit);
       closeModal.addEventListener('click', handleCancel);
       cancelBtn.addEventListener('click', handleCancel);
@@ -177,33 +162,21 @@ class CheckoutManager {
   }
 }
 
-// Initialize checkout manager and expose globally
 declare global {
   interface Window {
     checkoutManager: CheckoutManager;
-    buyGame: (gameId: string) => void;
+    buyGame: (gameId: string, provider?: string) => void;
   }
 }
 
-// Get publishable key from data attribute
-const publishableKey = document.documentElement.dataset.stripeKey;
-console.log('Initializing checkout with key:', publishableKey ? 'Found' : 'Not found');
+const stripeKey = document.documentElement.dataset.stripeKey || null;
+window.checkoutManager = new CheckoutManager(stripeKey);
 
-if (publishableKey) {
-  window.checkoutManager = new CheckoutManager(publishableKey);
-  
-  // Global function for onclick handlers
-  window.buyGame = (gameId: string) => {
-    console.log('buyGame called with gameId:', gameId);
-    const button = event?.target as HTMLButtonElement;
-    if (button) {
-      window.checkoutManager.buyGame(gameId, button);
-    } else {
-      console.error('No button found in event target');
-    }
-  };
-  
-  console.log('buyGame function registered');
-} else {
-  console.error('No Stripe publishable key found in data-stripe-key attribute');
-}
+window.buyGame = (gameId: string, provider: string = 'stripe') => {
+  const button = event?.target as HTMLButtonElement;
+  if (button) {
+    window.checkoutManager.buyGame(gameId, provider, button);
+  } else {
+    console.error('No button found in event target');
+  }
+};
